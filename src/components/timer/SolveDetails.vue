@@ -2,7 +2,7 @@
   <div>
     <transition name="pop">
       <div v-if="solveModal" class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
-        <div class="relative w-auto my-6 mx-auto max-w-md">
+        <div class="relative w-auto my-6 mx-auto max-w-sm md:max-w-md">
             <!--content-->
             <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-dark outline-none focus:outline-none">
             <!--header-->
@@ -23,7 +23,7 @@
                 <h6 class="text-zinc-100">{{ new Date(selectedSolve.timestamp) }}</h6>
             </div>
             <!--footer-->
-            <div class="flex items-center justify-end p-6 border-solid border-blueGray-200 rounded-b">
+            <div class="flex items-center justify-end md:p-6 pb-6 md:pb-0 border-solid border-blueGray-200 rounded-b">
                 <span @click="solveOk()" class="text-gray-50 mx-2 px-3 py-1 font-bold transition duration-150 cursor-pointer rounded hover:bg-gray-50 hover:text-primary bg-primary">OK</span>
                 <span @click="solvePlusTwo()" class="text-gray-50 mx-2 px-3 py-1 font-bold transition duration-150 cursor-pointer rounded hover:bg-gray-50 hover:text-secondary bg-secondary">+2</span>
                 <span @click="solveDNF()" class="text-gray-50 mx-2 px-3 py-1 font-bold transition duration-150 cursor-pointer rounded hover:bg-gray-50 hover:text-danger bg-danger">DNF</span>
@@ -67,9 +67,11 @@ export default defineComponent({
             this.updateSolve(this.selectedSolve)
         },
         solvePlusTwo() {
-            this.selectedSolve.penalty = 1
-            this.selectedSolve.time += 2000
-            this.updateSolve(this.selectedSolve)
+            if (this.selectedSolve.penalty !== 1){
+                this.selectedSolve.penalty = 1
+                this.selectedSolve.time += 2000
+                this.updateSolve(this.selectedSolve)
+            }
         },
         solveDNF() {
             if (this.selectedSolve.penalty == 1){

@@ -7,7 +7,8 @@ const modalModule: Module<any, any> = {
     state: {
         modalState: false,
         solveModal: false,
-        selectedSolve: {} as Solve
+        selectedSolve: {} as Solve,
+        sessionDeleteModal: false,
     },
     actions : {},
     mutations:  {
@@ -18,7 +19,10 @@ const modalModule: Module<any, any> = {
             state.solveModal = !state.solveModal;
             if (state.solveModal) { state.selectedSolve = solve }
             else { state.selectedSolve = {} }
-        }
+        },
+        ToggleSessionDeleteModal(state) {
+            state.sessionDeleteModal = !state.sessionDeleteModal;
+        },
     },
     getters:  {
         getModalState(state) {

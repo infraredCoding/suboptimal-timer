@@ -20,30 +20,30 @@ const sessionsModule: Module<any, any> = {
                 include_docs: true,
                 attachments: true
             }).then(function (result: any) {
-                console.log(result)
                 const sessions = result.rows
-                console.log(sessions)
                 commit('SetCurrentSession', sessions[sessions.length - 1].doc)
                 commit('SetAllSessions', sessions)
-                console.log("CurrentSession", sessions[sessions.length - 1].doc)
             }).catch(function (err: Error) {
-            console.log(err);
+                console.log(err);
             });
-            // db.collection('sessionsDB').get().then(sessions => {
-                
-                
-            // })
         },
         addNewSession({commit}, payload){
             commit('PushNewSession', payload)
             db.put(payload)
+        },
+        deleteCurrentSession({commit, state}){
+            let sl = state.currentSession
+            sl = JSON.parse(JSON.stringify(sl))
+            commit('DeleteSession')
+            db.get(sl._id).then(function (doc) {
+                return db.remove(doc);
+            });
         },
     
         // Solves
         addNewSolve({commit, state}, payload){
             commit('AddSolveToSession', payload)
             let sl = state.currentSession
-            // console.log(s)
             sl = JSON.parse(JSON.stringify(sl))
             console.log(sl._id)
             db.get(sl._id).then((doc: any) => {
@@ -64,7 +64,6 @@ const sessionsModule: Module<any, any> = {
         updateSolve({commit, state}, payload){
             commit('UpdateSolve', payload)
             let sl = state.currentSession
-            // console.log(s)
             sl = JSON.parse(JSON.stringify(sl))
             db.get(sl._id).then((doc: any) => {
                 db.put({
@@ -84,7 +83,6 @@ const sessionsModule: Module<any, any> = {
         deleteSolve({commit, state}, payload){
             commit('DeleteSolve', payload)
             let sl = state.currentSession
-            // console.log(s)
             sl = JSON.parse(JSON.stringify(sl))
             console.log(sl._id)
             db.get(sl._id).then((doc: any) => {
@@ -112,6 +110,9 @@ const sessionsModule: Module<any, any> = {
         },
         PushNewSession(state, payload){
             state.allSessions.push(payload)
+        },
+        DeleteSession(state){
+            state.allSessions.filter((session: Session) => session._id == state.currentSession._id);
         },
     
         // Solves

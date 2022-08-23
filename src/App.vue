@@ -2,13 +2,13 @@
   <div class="bg-bgDark h-screen flex flex-col">
     <NavBar />
     <div class="relative overflow-hidden flex flex-grow">
-      {{ online }}
       <TimeList :toggles="toggleTList"/>
       <Timer />
     </div>
     <BottomNav @toggleTimeList="toggleTimeList"/>
     <CreateSessionModal />
     <SolveDetails />
+    <SessionDeleteModal />
 
     <!-- auth modals -->
     <LoginModal />
@@ -23,11 +23,16 @@ import TimeList from './components/timer/TimeList.vue'
 import Timer from './components/timer/Timer.vue'
 import BottomNav from './components/nav/BottomNav.vue'
 import CreateSessionModal from './components/timer/SessionForm.vue'
+import SessionDeleteModal from './components/timer/SessionDeleteModal.vue'
 import LoginModal from './components/auth/LoginModal.vue'
 import RegisterModal from './components/auth/RegisterModal.vue'
 import { mapActions, mapState } from 'vuex'
 import PouchDB from 'pouchdb'
 import SolveDetails from "@/components/timer/SolveDetails.vue";
+
+const COUCHDB_SERVER_URI = process.env.VUE_APP_COUCHDB_SERVER_URI;
+const USERNAME = process.env.VUE_APP_COUCHDB_ADMIN_USERNAME
+const PASSWORD = process.env.VUE_APP_COUCHDB_ADMIN_PASSWORD
 
 window.addEventListener('keydown', function(e) {
   if(e.keyCode == 32 && e.target == document.body) {
@@ -45,6 +50,7 @@ export default defineComponent({
    Timer,
    CreateSessionModal,
    SolveDetails,
+   SessionDeleteModal,
    LoginModal,
    RegisterModal
   },
@@ -58,7 +64,6 @@ export default defineComponent({
       this.toggleTList = !this.toggleTList;
     },
     ...mapActions('sessionsModule', ['initSessions']),
-    // ...mapMutations('connectionModule', ['ToggleConnectionState'])
   },
   computed: {
     ...mapState('authModule', ['username']),
@@ -68,15 +73,11 @@ export default defineComponent({
     this.initSessions();
 
     if (this.username !== '') {
-      // let remoteDB = new PouchDB(`http://admin:password@localhost:5984/${this.username}`)
       const localDB = new PouchDB('sessionsList');
 
-      // let sl = this.db
-      // localDB = JSON.parse(JSON.stringify(sl))
-
-      const url = new URL("http://localhost:5984/");
-      url.username = 'admin';
-      url.password = 'password';
+      const url = new URL(COUCHDB_SERVER_URI);
+      url.username = USERNAME;
+      url.password = PASSWORD;
       url.pathname = this.username.toLowerCase();
       const authedURL = url.toString();
 
@@ -97,16 +98,6 @@ export default defineComponent({
       }
 
   },
-  // created() {
-  //   window.addEventListener('online', () => {
-  //     console.log("connection regained")
-  //     this.ToggleConnectionState(true)
-  //   });
-  //   window.addEventListener('offline', () => {
-  //     console.log("connection lost")
-  //     this.ToggleConnectionState(false)
-  //   });
-  // }
 });
 </script>
 

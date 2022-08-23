@@ -27,6 +27,9 @@
                 <input type="text" placeholder="name" class="bg-bgDark text-gray-50 px-4 py-2 my-2 rounded-md focus:outline-none w-full" v-model="user.name">
                 <input type="email" placeholder="email" class="bg-bgDark text-gray-50 px-4 py-2 my-2 rounded-md focus:outline-none w-full" v-model="user.email">
                 <input type="text" placeholder="username" class="bg-bgDark text-gray-50 px-4 py-2 my-2 rounded-md focus:outline-none w-full" v-model="user.username">
+                <h6 class="text-red-600" v-if="checkUsernameIsInvalid">
+                  Username Cannot Contain Special Characters (#, &amp;, @, % etc) nor spaces.
+                </h6>
                 <input type="password" placeholder="password" class="bg-bgDark text-gray-50 px-4 py-2 my-2 rounded-md focus:outline-none w-full" v-model="user.password">
                 <input type="password" placeholder="confirm password" class="bg-bgDark text-gray-50 px-4 py-2 my-2 rounded-md focus:outline-none w-full" v-model="confirmPassword">
                 <p class="text-danger font-bold" v-if="!checkPassword">Passwords Don&apos;t Match</p>
@@ -83,7 +86,7 @@ export default defineComponent({
       this.ToggleAuthRegisterModal();
     },
     register(): void {
-      if (this.checkPassword){
+      if (this.checkPassword && !this.checkUsernameIsInvalid){
         this.loading = true
         this.registerUser({
           name: this.user.name,
@@ -92,7 +95,6 @@ export default defineComponent({
           username: this.user.username
         }).then(res => {
           console.log(res)
-          // this.ToggleAuthRegisterModal()
           if (this.registerMessage.error){
             this.loading = false;  
           }else {
@@ -100,7 +102,7 @@ export default defineComponent({
             this.loading = false;
           }
         }).catch(err => {
-          console.log("mY eRROPR", err)
+          console.log(err)
         })
       }
     },
@@ -113,6 +115,10 @@ export default defineComponent({
       if (this.user.password !== "" && this.confirmPassword !== "")
         return this.user.password == this.confirmPassword;
       return true;
+    },
+    checkUsernameIsInvalid(): boolean {
+      //eslint-disable-next-line
+      return /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(this.user.username);
     }
   }
 })

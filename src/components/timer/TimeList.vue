@@ -4,7 +4,11 @@
             <option v-for="(s, idx) in allSessions" :key="idx" :value="s.doc.name" :selected="s.doc == currentSession">
               {{s.doc.name}}
             </option>
-        </select><br>
+        </select>
+        <button @click="ToggleSessionDeleteModal()" class="ml-2 my-3 btn-sm bg-red-600 hover:text-red-600 hover:bg-gray-100 transition duration-150">
+            <i class="fa fa-trash "></i>
+        </button>
+        <br>
         <button @click="ToggleModal()" class="my-4 btn bg-secondary hover:text-secondary hover:bg-gray-100 transition duration-150">
             <i class="fas fa-plus mr-3"></i> New Session
         </button>
@@ -30,7 +34,6 @@
 import { mapMutations, mapState } from 'vuex'
 import moment from 'moment';
 import { defineComponent } from '@vue/runtime-core';
-import Session from '@/interface/timer/session.interface'
 import { Solve } from '@/interface/timer/solve.interface';
 
 export default defineComponent({
@@ -87,7 +90,6 @@ export default defineComponent({
         if (this.currentSession.solveList.length < n) return 'N/A'
 
         let listOfSolves: Array<Solve> = this.currentSession.solveList.slice(0, n);
-        console.log(listOfSolves)
 
         let total = 0;
         let average = 0;
@@ -105,8 +107,6 @@ export default defineComponent({
         minTime = listOfSolves.filter(solve => solve.time == Math.min(...listOfSolves.map(item => item.time)))[0]
 
         let countingSolves: Array<Solve> = listOfSolves.filter(solve => solve !== minTime).filter(solve => solve !== maxTime);
-
-        console.log(minTime, maxTime, countingSolves)
 
         countingSolves.forEach(solve => {
           total += solve.time;
@@ -131,14 +131,12 @@ export default defineComponent({
           total += solve.time;
         });
 
-        console.log(listOfSolves, total, total /3 )
-
         mean = total / n;
         var minutes = moment.duration(mean).minutes();
         return minutes == 0 ? moment.utc(mean).format('ss.SS') : moment.utc(mean).format('mm:ss.SS')
 
       },
-      ...mapMutations('modalModule', ['ToggleModal', 'ToggleSolveModal']),
+      ...mapMutations('modalModule', ['ToggleModal', 'ToggleSolveModal', 'ToggleSessionDeleteModal']),
       ...mapMutations('sessionsModule', ['SetCurrentSession'])
     },
     computed: {

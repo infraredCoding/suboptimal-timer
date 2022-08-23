@@ -47,6 +47,27 @@ import { defineComponent } from '@vue/runtime-core'
 import Session from '@/interface/timer/session.interface'
 import { Solve } from '@/interface/timer/solve.interface'
 
+let puzzleMap = new Map<string, string>(
+  [
+    ['3x3x3', "3x3x3"],
+    ['2x2x2', "2x2x2"],
+    ['4x4x4', "4x4x4"],
+    ['5x5x5', "5x5x5"],
+    ['6x6x6', "6x6x6"],
+    ['7x7x7', "7x7x7"],
+    ['3x3x3 Blindfolded (3BLD)', "3x3x3"],
+    ['3x3x3 Fewest Moves (FMC)', "3x3x3"],
+    ['3x3x3 One-Handed', "3x3x3"],
+    ['Megaminx', "megaminx"],
+    ['Pyraminx', "pyraminx"],
+    ['Clock', "clock"],
+    ['Skewb', "skewb"],
+    ['Square-1', "square1"],
+    ['4x4x4 Blindfolded (4BLD)', "4x4x4"],
+    ['5x5x5 Blindfolded (5BLD)', "5x5x5"],
+    ['3x3x3 Multi-Blind (MBLD)', "3x3x3"],
+  ]
+);
 export default defineComponent({
   name: "CreateSessionModal",
   data() {
@@ -78,7 +99,7 @@ export default defineComponent({
       var newSession = {
         _id: uuidv4(),
         name: `${this.selectedPuzzle}_${this.allSessions.length+1}`,
-        puzzle: this.selectedPuzzle,
+        puzzle: puzzleMap.get(this.selectedPuzzle),
         solveList: [] as Array<Solve>
       } as Session
 

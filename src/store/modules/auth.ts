@@ -3,6 +3,8 @@ import axios, { AxiosError } from 'axios'
 import { LoginData } from "@/interface/auth/login.interface";
 import { User } from "@/interface/auth/user.interface";
 
+const AUTH_SERVER_URI = process.env.VUE_APP_AUTH_SERVER_URI;
+
 const authModule: Module<any, any> = {
     namespaced: true,
 
@@ -31,7 +33,7 @@ const authModule: Module<any, any> = {
 
     actions: {
         async loginUser(context, credentials: LoginData){
-            return axios.post('http://127.0.0.1:5000/api/auth/login', {
+            return axios.post(`${AUTH_SERVER_URI}/api/auth/login`, {
                 username: credentials.username,
                 password: credentials.password
             }).then(response => {
@@ -47,7 +49,7 @@ const authModule: Module<any, any> = {
             })
         },
         async registerUser(context, credentials: User){
-            return axios.post('http://127.0.0.1:5000/api/auth/register', {
+            return axios.post(`${AUTH_SERVER_URI}/api/auth/register`, {
               username: credentials.username,
               name: credentials.name,
               email: credentials.email,
@@ -57,7 +59,6 @@ const authModule: Module<any, any> = {
                 context.commit('clearRegistrationError')
             })
               .catch(err => {
-                console.log("Error", err)
                 context.commit('addRegistrationError', err);
             })
         },

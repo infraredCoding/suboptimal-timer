@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col m-3 lg:m-0 lg:mt-3 lg:-mb-3 lg:ml-3 w-screen font-body bg-dark rounded-md overflow-y-auto" id="timer_wrapper">
       <div class="text-center mx-auto">
+          <h6 class="text-center pt-6 text-md md:text-lg lg:text-xl px-10 md:px-16 text-gray-100" v-if="allSessions.length === 0">
+            You have no sessions! Create one to Get Started
+          </h6>
           <h6 class="text-center pt-6 text-md md:text-lg lg:text-xl px-10 md:px-16 text-gray-100">
             {{ scramble }}
           </h6>
@@ -97,7 +100,7 @@ export default defineComponent({
         }
         return time
       },
-      ...mapState('sessionsModule', ['currentSession', 'loaded']),
+      ...mapState('sessionsModule', ['currentSession', 'loaded', 'allSessions']),
       ...mapGetters('sessionsModule', ['getSession'])
     },
     mounted(){
@@ -121,7 +124,6 @@ export default defineComponent({
         }
       },
       currentSession(newSession, oldSession) {
-        // console.log(oldSession);
         if (oldSession == null) {
           console.log("got a session")
           this.SessionsHaveLoaded();
@@ -129,11 +131,8 @@ export default defineComponent({
         console.log(newSession)
         this.getScramble(puzzleMapping.get(newSession.puzzle) || "333")
         this.currentPuzzle = newSession.puzzle
-        console.log(newSession)
-        console.log(newSession.puzzle)
         player.puzzle = newSession.puzzle;
         player.alg = this.scramble
-        console.log(this.currentPuzzle)
       },
     },
     methods: {
@@ -147,7 +146,23 @@ export default defineComponent({
       // timer functionalities
       startTimer (e: KeyboardEvent){
         if (e.key == " "){
-          this.lastKeyUp = moment.now();
+          if (this.scramble !== ''){
+            this.lastKeyUp = moment.now();
+
+            if (this.timerState == 'ready'){
+              this.timerState = 'running'
+
+              this.ticker = setInterval(() => {
+                this.currentTime += 10
+              }, 10)
+            }
+          }
+        }
+      },
+
+      startTimerTouch (){
+        if (this.scramble !== '') {
+          this.lastTouchUp = moment.now();
 
           if (this.timerState == 'ready'){
             this.timerState = 'running'
@@ -156,18 +171,6 @@ export default defineComponent({
               this.currentTime += 10
             }, 10)
           }
-        }
-      },
-
-      startTimerTouch (){
-        this.lastTouchUp = moment.now();
-
-        if (this.timerState == 'ready'){
-          this.timerState = 'running'
-
-          this.ticker = setInterval(() => {
-            this.currentTime += 10
-          }, 10)
         }
       },
 
@@ -247,12 +250,14 @@ export default defineComponent({
         this.updateSolve(currentSolve)
       },
       solvePlusTwo() {
-        this.currentPenalty = 1
-        this.currentTime += 2000
-        let currentSolve: Solve = this.currentSession.solveList[this.currentSession.solveList.length - 1]
-        currentSolve.time = this.currentTime
-        currentSolve.penalty = this.currentPenalty
-        this.updateSolve(currentSolve)
+        if (this.currentPenalty !== 1){
+          this.currentPenalty = 1
+          this.currentTime += 2000
+          let currentSolve: Solve = this.currentSession.solveList[this.currentSession.solveList.length - 1]
+          currentSolve.time = this.currentTime
+          currentSolve.penalty = this.currentPenalty
+          this.updateSolve(currentSolve)
+        }
       },
       solveDNF() {
         if (this.currentPenalty == 1){
