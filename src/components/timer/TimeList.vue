@@ -5,7 +5,7 @@
               {{s.doc.name}}
             </option>
         </select>
-        <button @click="ToggleSessionDeleteModal()" class="ml-2 my-3 btn-sm bg-red-600 hover:text-red-600 hover:bg-gray-100 transition duration-150">
+        <button v-if="allSessions.length > 0" @click="ToggleSessionDeleteModal()" class="ml-2 my-3 btn-sm bg-red-600 hover:text-red-600 hover:bg-gray-100 transition duration-150">
             <i class="fa fa-trash "></i>
         </button>
         <br>
