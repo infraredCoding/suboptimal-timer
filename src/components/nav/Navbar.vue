@@ -12,7 +12,7 @@
       <div v-bind:class="{'hidden': !showMenu, 'flex': showMenu}" class="lg:flex lg:flex-grow items-center transition duration-150">
         <ul class="flex flex-col lg:flex-row list-none ml-auto">
           <li class="nav-item">
-            <a class="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:bg-bgDark transition duration-150 rounded" href="#pablo">
+            <a class="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:bg-bgDark transition duration-150 rounded" href="https://github.com/infraredCoding/suboptimal-timer">
               <i class="fab fa-github text-lg leading-lg text-white opacity-75" /><span class="ml-2">Star</span>
             </a>
           </li>
