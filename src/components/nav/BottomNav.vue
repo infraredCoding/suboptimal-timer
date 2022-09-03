@@ -12,7 +12,7 @@
               {{s.doc.name}}
             </option>
         </select>
-        <button @click="ToggleSessionDeleteModal()" class="w-full px-3 py-2 rounded-md text-center bg-red-600">
+        <button  v-if="currentSession" @click="ToggleSessionDeleteModal()" class="w-full px-3 py-2 rounded-md text-center bg-red-600">
           <i class="fa fa-trash font-bold"></i>
         </button><br>
       </div>
